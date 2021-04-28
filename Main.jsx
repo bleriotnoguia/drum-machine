@@ -63,22 +63,38 @@ class Main extends React.Component {
             ],
             currentText: ""
     };
+
     }
+
+    componentWillMount() {
+        document.addEventListener("keydown", this.handleOnKeyDown.bind(this));
+    }
+  
+    componentWillUnmount() {
+        document.removeEventListener("keydown", this.handleOnKeyDown.bind(this));
+    } 
 
     handleDrumPadClick(elt, description){
         elt.target.childNodes[0].play()
         this.setState({currentText: description})
     }
 
+    handleOnKeyDown(e){
+        var elt = document.getElementById(e.keyCode)
+        if(elt){
+            elt.click()
+        }
+        
+    }
+
     render() {
         var data = this.state.data;
         return (
-            <div id="drum-machine">
+            <div id="drum-machine" onKeyDown={this.handleOnKeyDown}>
                 <div id="container-dum-pad">
                     {data.map((item, index) => {
-                        document.addEventListener(item.keyCode, e => this.handleDrumPadClick(e, item.id));
                         return (
-                            <div className="drum-pad" id="" key={index} onClick={e => this.handleDrumPadClick(e, item.id)}>
+                            <div className="drum-pad" id={item.keyCode} key={index} onClick={e => this.handleDrumPadClick(e, item.id)}>
                                 <audio className='clip' src={item.url} id={item.keyTrigger} >
                                 </audio>
                                 {item.keyTrigger}
